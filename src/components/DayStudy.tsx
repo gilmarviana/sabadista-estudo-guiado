@@ -1,8 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { CalendarDays, BookOpenCheck, MessageCircleQuestion } from "lucide-react";
+import { CalendarDays, BookOpenCheck, MessageCircleQuestion, Brain, FileText } from "lucide-react";
 import { DayStudy as DayStudyType } from "@/types/lesson";
 
 interface DayStudyProps {
@@ -44,22 +43,33 @@ export function DayStudy({ dayStudy, isSelected, onSelect }: DayStudyProps) {
       </CardHeader>
       
       <CardContent className="space-y-4">
-        <div className="text-sm text-foreground leading-relaxed line-clamp-3">
-          {dayStudy.content.split('\n')[0]}...
+        {/* Summary preview */}
+        <div className="bg-gradient-golden/20 p-3 rounded-lg border border-spiritual-gold/20">
+          <div className="flex items-center space-x-1 mb-2">
+            <FileText className="w-3 h-3 text-spiritual-gold" />
+            <span className="text-xs font-medium text-foreground">Resumo:</span>
+          </div>
+          <p className="text-xs text-muted-foreground line-clamp-2">{dayStudy.summary}</p>
         </div>
         
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <div className="flex items-center space-x-4">
-            {dayStudy.verses && (
+            {dayStudy.verses && dayStudy.verses.length > 0 && (
               <div className="flex items-center">
                 <BookOpenCheck className="w-3 h-3 mr-1" />
                 {dayStudy.verses.length} versículos
               </div>
             )}
-            {dayStudy.questions && (
+            {dayStudy.questions && dayStudy.questions.length > 0 && (
               <div className="flex items-center">
                 <MessageCircleQuestion className="w-3 h-3 mr-1" />
                 {dayStudy.questions.length} perguntas
+              </div>
+            )}
+            {dayStudy.quiz && dayStudy.quiz.length > 0 && (
+              <div className="flex items-center">
+                <Brain className="w-3 h-3 mr-1" />
+                {dayStudy.quiz.length} quiz
               </div>
             )}
           </div>

@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ArrowLeft, Calendar, Quote, BookOpen, MessageCircleQuestion } from "lucide-react";
 import { Lesson, DayStudy as DayStudyType } from "@/types/lesson";
 import { DayStudy } from "./DayStudy";
+import { DayStudyDetail } from "./DayStudyDetail";
 
 interface LessonDetailProps {
   lesson: Lesson;
@@ -15,6 +16,63 @@ interface LessonDetailProps {
 
 export function LessonDetail({ lesson, onBack }: LessonDetailProps) {
   const [selectedDay, setSelectedDay] = useState<DayStudyType | null>(null);
+  const [showDayDetail, setShowDayDetail] = useState(false);
+
+  const handleDaySelect = (day: DayStudyType) => {
+    setSelectedDay(day);
+    setShowDayDetail(true);
+  };
+
+  const handleBackToLesson = () => {
+    setShowDayDetail(false);
+    setSelectedDay(null);
+  };
+
+  const handleNextDay = () => {
+    if (selectedDay) {
+      const currentIndex = lesson.days.findIndex(d => d === selectedDay);
+      if (currentIndex < lesson.days.length - 1) {
+        setSelectedDay(lesson.days[currentIndex + 1]);
+      }
+    }
+  };
+
+  const handlePrevDay = () => {
+    if (selectedDay) {
+      const currentIndex = lesson.days.findIndex(d => d === selectedDay);
+      if (currentIndex > 0) {
+        setSelectedDay(lesson.days[currentIndex - 1]);
+      }
+    }
+  };
+
+  const getCurrentDayIndex = () => {
+    if (!selectedDay) return -1;
+    return lesson.days.findIndex(d => d === selectedDay);
+  };
+
+  const hasNextDay = () => {
+    const currentIndex = getCurrentDayIndex();
+    return currentIndex >= 0 && currentIndex < lesson.days.length - 1;
+  };
+
+  const hasPrevDay = () => {
+    const currentIndex = getCurrentDayIndex();
+    return currentIndex > 0;
+  };
+
+  if (showDayDetail && selectedDay) {
+    return (
+      <DayStudyDetail
+        dayStudy={selectedDay}
+        onBack={handleBackToLesson}
+        onNextDay={hasNextDay() ? handleNextDay : undefined}
+        onPrevDay={hasPrevDay() ? handlePrevDay : undefined}
+        hasNextDay={hasNextDay()}
+        hasPrevDay={hasPrevDay()}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-peaceful">
@@ -57,7 +115,10 @@ export function LessonDetail({ lesson, onBack }: LessonDetailProps) {
                       Verso para Memorizar:
                     </p>
                     <p className="italic text-foreground leading-relaxed">
-                      {lesson.memoryVerse}
+                      "{lesson.memoryVerse.text}"
+                    </p>
+                    <p className="text-sm font-medium text-spiritual-gold mt-2">
+                      — {lesson.memoryVerse.reference}
                     </p>
                   </div>
                 </div>
@@ -90,7 +151,7 @@ export function LessonDetail({ lesson, onBack }: LessonDetailProps) {
                 key={index}
                 dayStudy={day}
                 isSelected={selectedDay === day}
-                onSelect={() => setSelectedDay(day)}
+                onSelect={() => handleDaySelect(day)}
               />
             ))}
           </div>
@@ -142,7 +203,7 @@ export function LessonDetail({ lesson, onBack }: LessonDetailProps) {
                         <div className="flex flex-wrap gap-2">
                           {selectedDay.verses.map((verse, index) => (
                             <Badge key={index} variant="secondary" className="text-xs">
-                              {verse}
+                              {typeof verse === 'string' ? verse : verse.reference}
                             </Badge>
                           ))}
                         </div>
