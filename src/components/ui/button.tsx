@@ -15,6 +15,10 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        // Custom spiritual variants
+        spiritual: "bg-gradient-spiritual text-spiritual-light hover:opacity-90 shadow-lg",
+        golden: "bg-gradient-golden text-primary hover:opacity-90 shadow-md",
+        verse: "bg-verse-highlight text-foreground hover:bg-accent border border-border",
       },
       size: {
         default: "h-10 px-4 py-2",
